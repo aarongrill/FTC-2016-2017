@@ -53,18 +53,88 @@ public class UltroDriveToLine extends LinearOpMode {
     //LightSensor             lightSensor;      // Primary LEGO Light sensor,
     OpticalDistanceSensor opticalDistanceSensor;   // Alternative MR ODS sensor
     ColorSensor colorSensor;
-
+    ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
+    
     static final double     WHITE_THRESHOLD = 0.3;  // spans between 0.1 - 0.5 from dark to light
     static final double     APPROACH_SPEED  = 0.5;
+    
+    //Gyro Setup
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+                                                      (WHEEL_DIAMETER_INCHES * 3.1415);
+    //Gyro
+    // These constants define the desired driving/control characteristics
+    // The can/should be tweaked to suite the specific robot drive train.
+    static final double     DRIVE_SPEED             = 0.7;     // Nominal speed for better accuracy.
+    static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
 
+    //Gyro
+    static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
+    static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
+    static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
+    
     @Override
     public void runOpMode() {
 
         /* Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
-
+        
+        
         robot.init(hardwareMap);
+        
+        /* GYRO SETUP FROM HERE TO END GYRO SETUP */
+       
+        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.
+        robot.leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // Send telemetry message to alert driver that we are calibrating;
+        telemetry.addData(">", "Calibrating Gyro");    //
+        telemetry.update();
+
+        gyro.calibrate();
+
+        // make sure the gyro is calibrated before continuing
+        while (!isStopRequested() && gyro.isCalibrating())  {
+            sleep(50);
+            idle();
+        }
+
+        telemetry.addData(">", "Robot Ready.");    //
+        telemetry.update();
+
+        robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Wait for the game to start (Display Gyro value), and reset gyro before we move..
+        while (!isStarted()) {
+            telemetry.addData(">", "Robot Heading = %d", gyro.getIntegratedZValue());
+            telemetry.update();
+            idle();
+        }
+        gyro.resetZAxisIntegrator();
+        
+        /* END GYRO SETUP */
+        
+        /* SAMPLE
+        gyroDrive(DRIVE_SPEED, 48.0, 0.0);    // Drive FWD 48 inches
+        gyroTurn( TURN_SPEED, -45.0);         // Turn  CCW to -45 Degrees
+        gyroHold( TURN_SPEED, -45.0, 0.5);    // Hold -45 Deg heading for a 1/2 second
+        gyroTurn( TURN_SPEED,  45.0);         // Turn  CW  to  45 Degrees
+        gyroHold( TURN_SPEED,  45.0, 0.5);    // Hold  45 Deg heading for a 1/2 second
+        gyroTurn( TURN_SPEED,   0.0);         // Turn  CW  to   0 Degrees
+        gyroHold( TURN_SPEED,   0.0, 1.0);    // Hold  0 Deg heading for a 1 second
+        gyroDrive(DRIVE_SPEED,-48.0, 0.0);    // Drive REV 48 inches
+        gyroHold( TURN_SPEED,   0.0, 0.5);    // Hold  0 Deg heading for a 1/2 second
+
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
+        
+        */
         
         //Turn on flywheels for 3 seconds, then turn on elevator (intake b) for 5 seconds
         shootBalls(3, 5);

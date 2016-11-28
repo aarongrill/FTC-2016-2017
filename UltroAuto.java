@@ -121,7 +121,7 @@ public class UltroDriveToLine extends LinearOpMode {
         
         /* END GYRO SETUP */
         
-        /* SAMPLE
+        /* SAMPLE GYRO FUNCTION CALLS 
         gyroDrive(DRIVE_SPEED, 48.0, 0.0);    // Drive FWD 48 inches
         gyroTurn( TURN_SPEED, -45.0);         // Turn  CCW to -45 Degrees
         gyroHold( TURN_SPEED, -45.0, 0.5);    // Hold -45 Deg heading for a 1/2 second

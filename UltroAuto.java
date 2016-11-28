@@ -45,7 +45,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="UltroAuto", group="Pushbot")
 //@Disabled
-public class UltroDriveToLine extends LinearOpMode {
+public class UltroAuto extends LinearOpMode {
 
     /* Declare OpMode members. */
     org.firstinspires.ftc.teamcode.HardwarePushbot robot       = new org.firstinspires.ftc.teamcode.HardwarePushbot();   // Use a Pushbot's hardware
@@ -60,8 +60,8 @@ public class UltroDriveToLine extends LinearOpMode {
     static final double     APPROACH_SPEED  = 0.5;
     
     //Gyro Setup
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
+    static final double     COUNTS_PER_MOTOR_REV    = 7 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 40.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);

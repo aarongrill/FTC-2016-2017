@@ -51,6 +51,7 @@ public class HardwarePushbot {
     public Servo    rightBeacon   = null;
     public ColorSensor colorSensor = null;
     public OpticalDistanceSensor opticalDistanceSensor = null;
+    public ModernRoboticsI2cGyro gyro = null;
     public static final double MID_SERVO       =  0.5 ;
 
     /* local OpMode members. */
@@ -76,6 +77,7 @@ public class HardwarePushbot {
         intakeBMotor   = hwMap.dcMotor.get("fly_Right");
         opticalDistanceSensor = hwMap.opticalDistanceSensor.get("sensor_ods");
         colorSensor = hwMap.colorSensor.get("sensor_color");
+        gyro = hwMap.ModernROboticsI2cGyro.get("sensor_gyro);
         
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors

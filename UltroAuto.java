@@ -89,6 +89,8 @@ public class UltroAuto extends LinearOpMode {
         /* GYRO SETUP FROM HERE TO END GYRO SETUP */
        
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        opticalDistanceSensor = hardwareMap.opticalDistanceSensor.get("sensor_ods");
+        colorSensor = hardwareMap.colorSensor.get("sensor_color");
         // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.
         robot.leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -138,33 +140,41 @@ public class UltroAuto extends LinearOpMode {
         */
         
         //Turn on flywheels for 3 seconds, then turn on elevator (intake b) for 5 seconds
-        shootBalls(3, 5);
+        shootBalls(6.0);
 
         runtime.reset();
         
-        //turn in degrees 
-        turn(-30);
+        gyroDrive(DRIVE_SPEED, 54.0, 0.0);    // Drive FWD 54 inches
         
-        runtime.reset();
+        gyroTurn(TURN_SPEED, 90.0);
+        
+        
+        //turn in degrees 
+        //turn(-30);
+        
+        //runtime.reset();
 
         driveToLine();
 
         //turnToBeacon();
-
+        
+        lineToBeacon();
+        
         decideColor();
 
-        press();
+        
+        
+        
         // If there are encoders connected, switch to RUN_USING_ENCODER mode for greater accuracy
         // robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // get a reference to our Light Sensor object.
-        opticalDistanceSensor = hardwareMap.opticalDistanceSensor.get("sensor_ods");
-        colorSensor = hardwareMap.colorSensor.get("sensor_color");// Primary LEGO Light Sensor
+        // Primary LEGO Light Sensor
         //  lightSensor = hardwareMap.opticalDistanceSensor.get("sensor_ods");  // Alternative MR ODS sensor.
 
         // turn on LED of light sensor.
-        opticalDistanceSensor.enableLed(true);
+        
 
         // Send telemetry message to signify robot waiting;
         //telemetry.addData("Status", "Ready to run");    //
@@ -172,13 +182,13 @@ public class UltroAuto extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         // Abort this loop if started or stopped.
-        while (!(isStarted() || isStopRequested())) {
+        /*while (!(isStarted() || isStopRequested())) {
 
             // Display the light level while we are waiting to start
             telemetry.addData("Light Level", opticalDistanceSensor.getLightDetected());
             telemetry.update();
             idle();
-        }
+        }*/
 
         // Start the robot moving forward, and then begin looking for a white line.
         /*robot.leftMotor.setPower(APPROACH_SPEED);
@@ -197,24 +207,25 @@ public class UltroAuto extends LinearOpMode {
         //robot.rightMotor.setPower(0);
     }
 
-    public void shootBalls()
+    public void shootBalls(double time)
     {
-        while(runtime.seconds()<= 5.0) {
-            robot.elevatorMotor.setPower(1.0);
-            robot.leftFlyWheel.setPower(0.25);
-            robot.rightFlyWheel.setPower(-0.25);
+        while(runtime.seconds()<= time) {
+            
+            robot.flyWheelLeftMotor.setPower(0.20);
+            robot.flyWheelRightMotor.setPower(-0.20);
+            robot.intakeBMotor.setPower(1.0);
         }
-        robot.elevatorMotor.setPower(0.0);
-        robot.leftFlyWheel.setPower(0.0);
-        robot.rightFlyWheel.setPower(0.0);
+        robot.intakeBMotor.setPower(0.0);
+        robot.flyWheelLeftMotor.setPower(0.0);
+        robot.flyWheelRightMotor.setPower(0.0);
     }
 
-    public void turn(){
+    /*public void turn(){
         while(runtime.seconds()<=1.0){
             robot.rightMotor.setPower(1.0);
             robot.leftMotor.setPower(-1.0);
         }
-    }
+    }*/
 
     public void driveToLine()
     {
@@ -234,7 +245,7 @@ public class UltroAuto extends LinearOpMode {
         }
     }
 
-    public void turnToBeacon()
+    /*public void turnToBeacon()
     {
 
     }
@@ -246,7 +257,7 @@ public class UltroAuto extends LinearOpMode {
             robot.leftMotor.setPower(APPROACH_SPEED);
             robot.rightMotor.setPower(APPROACH_SPEED);
         }
-    }
+    }*/
 
     public void decideColor()
     {
@@ -265,13 +276,15 @@ public class UltroAuto extends LinearOpMode {
 
         if(colorSensor.red() > colorSensor.blue() && colorSensor.red() > colorSensor.green())
         {
-            robot.rightPad.setPosition(0.0);
-            robot.leftPad.setPosition(0.5);
+            robot.rightBeacon.setPosition(0.0);
+            robot.leftBeacon.setPosition(0.5);
         }
+        robot.leftMotor.setPower(0.5);
+        robot.rightMotor.setPower(0.5);
     }
 
-    public void press(){
-        while (opModeIsActive() && runtime.seconds()<=2.0) {
+    public void lineToBeacon(){
+        while (runtime.seconds()<=2.0) {
             robot.leftMotor.setPower(APPROACH_SPEED);
             robot.rightMotor.setPower(APPROACH_SPEED);
         }

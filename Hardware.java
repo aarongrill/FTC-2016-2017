@@ -71,10 +71,10 @@ public class HardwarePushbot {
         // Define and Initialize Motors
         leftMotor   = hwMap.dcMotor.get("left_drive");
         rightMotor  = hwMap.dcMotor.get("right_drive");
-        flyWheelLeftMotor    = hwMap.dcMotor.get("intake_a");
-        flyWheelRightMotor   = hwMap.dcMotor.get("intake_b");
-        intakeAMotor   = hwMap.dcMotor.get("fly_Left");
-        intakeBMotor   = hwMap.dcMotor.get("fly_Right");
+        flyWheelLeftMotor    = hwMap.dcMotor.get("fly_Left");
+        flyWheelRightMotor   = hwMap.dcMotor.get("fly_Right");
+        intakeAMotor   = hwMap.dcMotor.get("intake_a");
+        intakeBMotor   = hwMap.dcMotor.get("intake_b");
         opticalDistanceSensor = hwMap.opticalDistanceSensor.get("sensor_ods");
         colorSensor = hwMap.colorSensor.get("sensor_color");
         gyro = hwMap.ModernROboticsI2cGyro.get("sensor_gyro);
@@ -82,9 +82,9 @@ public class HardwarePushbot {
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         intakeAMotor.setDirection(DcMotor.Direction.FORWARD);
-        intakeBMotor.setDirection(DcMotor.Direction.REVERSE);
-        flyWheelLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-        flyWheelRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        intakeBMotor.setDirection(DcMotor.Direction.FORWARD);
+        flyWheelLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        flyWheelRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
         leftMotor.setPower(0);

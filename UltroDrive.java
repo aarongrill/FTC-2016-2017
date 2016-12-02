@@ -102,15 +102,14 @@ public class UltroDrive extends OpMode{
 
         float left = -gamepad1.left_stick_y;
         float right = -gamepad1.right_stick_y;
-        float intakeA = -gamepad2.left_stick_y;
+        //zipties intake
+        //float intakeA = -gamepad2.left_stick_y;
+        //elevator intake
         float intakeB = -gamepad2.right_stick_y;
 
         if (gamepad2.a){
             robot.flyWheelLeftMotor.setPower(-0.2);
-            robot.flyWheelRightMotor.setPower(0.2);
-            } else if (gamepad2.right_trigger > 0.5){
-                robot.flyWheelLeftMotor.setPower(distance);
-                robot.flyWheelRightMotor.setPower(distance);
+            robot.flyWheelRightMotor.setPower(0.2); 
         }
         if (gamepad2.b){
             robot.flyWheelLeftMotor.setPower(0);
@@ -118,29 +117,45 @@ public class UltroDrive extends OpMode{
         }
         robot.leftMotor.setPower(left);
         robot.rightMotor.setPower(right);
-        robot.intakeAMotor.setPower(intakeA);
+        //robot.intakeAMotor.setPower(intakeA);
         robot.intakeBMotor.setPower(intakeB);
 
+        if(gamepad2.dpad_up)
+        {
+            robot.intakeAMotor.setPower(1.0);
+        }
+        if(gamepad2.dpad_down)
+        {
+            robot.intakeAMotor.setPower(-1.0);
+        }
+        if(gamepad2.dpad_right)
+        {
+            robot.intakeAMotor.setPower(0.0);
+        }
 
         // Use gamepad left & right Bumpers to open and close the c=law
-        if (gamepad1.dpad_up)
-            leftOffset += SERVO_SPEED;
-        if (gamepad1.dpad_left)
-            leftOffset -= SERVO_SPEED;
-        if (gamepad1.dpad_down)
-            rightOffset += SERVO_SPEED;
-        if (gamepad1.dpad_right)
-            rightOffset -= SERVO_SPEED;
+        if (gamepad1.right_bumper){
+            robot.rightBeacon.setPosition(1.0);
+        }
+        if (gamepad1.left_bumper){
+            robot.leftBeacon.setPosition(-1.0);
+        }
+        if (gamepad1.right_trigger>0.0){
+            robot.rightBeacon.setPosition(0.5);
+        }
+        if (gamepad1.left_trigger>0.0){
+            robot.leftBeacon.setPosition(0.5);
+        }
         // if (gamepad1.right_bumper)
         //     servoOffset += SERVO_SPEED;
         // else if (gamepad1.left_bumper)
         //     servoOffset -= SERVO_SPEED;
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
-        leftOffset = Range.clip(leftOffset, -0.5, 0.5);
+        /*leftOffset = Range.clip(leftOffset, -0.5, 0.5);
         rightOffset = Range.clip(rightOffset, -0.5, 0.5);
         robot.leftBeacon.setPosition(robot.MID_SERVO + leftOffset);
-        robot.rightBeacon.setPosition(robot.MID_SERVO - rightOffset);
+        robot.rightBeacon.setPosition(robot.MID_SERVO - rightOffset);*/
 
 
         // Send telemetry message to signify robot running;

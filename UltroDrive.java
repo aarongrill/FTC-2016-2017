@@ -105,14 +105,14 @@ public class UltroDrive extends OpMode{
         float intakeA = -gamepad2.left_stick_y;
         float intakeB = -gamepad2.right_stick_y;
 
-        if (gamepad2.y){
+        if (gamepad2.a){
             robot.flyWheelLeftMotor.setPower(-0.2);
             robot.flyWheelRightMotor.setPower(0.2);
             } else if (gamepad2.right_trigger > 0.5){
                 robot.flyWheelLeftMotor.setPower(distance);
                 robot.flyWheelRightMotor.setPower(distance);
         }
-        if (gamepad2.a){
+        if (gamepad2.b){
             robot.flyWheelLeftMotor.setPower(0);
             robot.flyWheelRightMotor.setPower(0);
         }

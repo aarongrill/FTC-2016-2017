@@ -103,7 +103,7 @@ public class UltroAuto extends LinearOpMode {
 
         // make sure the gyro is calibrated before continuing
         while (!isStopRequested() && gyro.isCalibrating())  {
-            sleep(50);
+            sleep(5);
             idle();
         }
 

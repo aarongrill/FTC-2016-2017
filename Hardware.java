@@ -1,9 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
+
+
+
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+
 import com.qualcomm.robotcore.hardware.ColorSensor;
+
+
+
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -69,15 +77,14 @@ public class HardwarePushbot {
         intakeBMotor   = hwMap.dcMotor.get("intake_b");
         opticalDistanceSensor = hwMap.opticalDistanceSensor.get("sensor_ods");
         colorSensor = hwMap.colorSensor.get("sensor_color");
-        gyro = hwMap.ModernROboticsI2cGyro.get("sensor_gyro");
-        
+        gyro = (ModernRoboticsI2cGyro)hwMap.gyroSensor.get("sensor_gyro");
+
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         intakeAMotor.setDirection(DcMotor.Direction.FORWARD);
         intakeBMotor.setDirection(DcMotor.Direction.FORWARD);
         flyWheelLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         flyWheelRightMotor.setDirection(DcMotor.Direction.REVERSE);
-
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
@@ -85,23 +92,20 @@ public class HardwarePushbot {
         intakeBMotor.setPower(0);
         flyWheelLeftMotor.setPower((0));
         flyWheelRightMotor.setPower(0);
-
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
-        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeAMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intakeBMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         flyWheelLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         flyWheelRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         // Define and initialize ALL installed servos.
         leftBeacon = hwMap.servo.get("left_Beacon");
         rightBeacon = hwMap.servo.get("right_Beacon");
         leftBeacon.setPosition(MID_SERVO);
         rightBeacon.setPosition(MID_SERVO);
     }
-
     /***
      *
      * waitForTick implements a periodic delay. However, this acts like a metronome with a regular
@@ -112,15 +116,11 @@ public class HardwarePushbot {
      * @throws InterruptedException
      */
     public void waitForTick(long periodMs) throws InterruptedException {
-
         long  remaining = periodMs - (long)period.milliseconds();
-
         // sleep for the remaining portion of the regular cycle period.
         if (remaining > 0)
             Thread.sleep(remaining);
-
         // Reset the cycle clock for the next pass.
         period.reset();
     }
 }
-

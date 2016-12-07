@@ -69,7 +69,7 @@ public class HardwarePushbot {
         intakeBMotor   = hwMap.dcMotor.get("intake_b");
         opticalDistanceSensor = hwMap.opticalDistanceSensor.get("sensor_ods");
         colorSensor = hwMap.colorSensor.get("sensor_color");
-        gyro = hwMap.ModernROboticsI2cGyro.get("sensor_gyro);
+        gyro = hwMap.ModernROboticsI2cGyro.get("sensor_gyro");
         
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors

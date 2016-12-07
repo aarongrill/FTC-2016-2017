@@ -60,8 +60,8 @@ public class UltroAuto extends LinearOpMode {
     static final double     APPROACH_SPEED  = 0.5;
 
     //Gyro Setup
-    static final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // Andy Mark Encoder Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 40.0 ;     // This is < 1.0 if geared UP
+    static final double     COUNTS_PER_MOTOR_REV    = 28;    // eg: TETRIX Motor Encoder 1120
+    static final double     DRIVE_GEAR_REDUCTION    = 30.0 ;     // 40 reduction
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);

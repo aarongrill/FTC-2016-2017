@@ -1,17 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-
-
-
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-
 import com.qualcomm.robotcore.hardware.ColorSensor;
-
-
-
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;

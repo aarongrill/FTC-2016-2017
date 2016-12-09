@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -69,15 +70,15 @@ public class UltroDrive extends OpMode{
     public void loop() {
 
         float left = gamepad1.left_stick_y;
-        float right = -gamepad1.right_stick_y;
+        float right = gamepad1.right_stick_y;
         //zipties intake
         //float intakeA = -gamepad2.left_stick_y;
         //elevator intake
         float intakeB = -gamepad2.right_stick_y;
 
         if (gamepad2.a){
-            robot.flyWheelLeftMotor.setPower(-0.2);
-            robot.flyWheelRightMotor.setPower(0.2);
+            robot.flyWheelLeftMotor.setPower(-0.45);
+            robot.flyWheelRightMotor.setPower(0.45);
         }
         if (gamepad2.b){
             robot.flyWheelLeftMotor.setPower(0);
@@ -112,7 +113,7 @@ public class UltroDrive extends OpMode{
             robot.rightBeacon.setPosition(0.5);
         }
         if (gamepad1.left_trigger>0.0){
-            robot.leftBeacon.setPosition(0.5);
+            robot.leftBeacon.setPosition(0.6);
         }
         // if (gamepad1.right_bumper)
         //     servoOffset += SERVO_SPEED;

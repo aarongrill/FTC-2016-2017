@@ -102,9 +102,12 @@ public class UltroAuto extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        //Turn on flywheels for 3 seconds, then turn on elevator (intake b) for 5 seconds
+        shootBalls(8.0);
+
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(DRIVE_SPEED,  72,  -72, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        encoderDrive(DRIVE_SPEED,  72,  72, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
         /* Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
@@ -287,8 +290,9 @@ public class UltroAuto extends LinearOpMode {
     {
         while(runtime.seconds()<= time) {
 
-            robot.flyWheelLeftMotor.setPower(0.20);
-            robot.flyWheelRightMotor.setPower(-0.20);
+            robot.flyWheelLeftMotor.setPower(-0.45);
+            robot.flyWheelRightMotor.setPower(0.45);
+            sleep(1000);
             robot.intakeBMotor.setPower(1.0);
         }
         robot.intakeBMotor.setPower(0.0);

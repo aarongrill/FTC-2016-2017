@@ -63,6 +63,9 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 @TeleOp(name="UltroDrive", group="Pushbot")
 
 public class UltroDrive extends OpMode{
+    double          intakeOffset  = 0.0 ;                  // Servo mid position
+    final double    INTAKE_SPEED  = 0.02 ;
+
     static final double INCREMENT   = 0.01; // amount to ramp motor each CYCLE_MS cycle
     static final double DECREASE    = -0.01;
     static final double MAX_FWD     =  0.6;     // Maximum FWD power applied to motor
@@ -73,8 +76,6 @@ public class UltroDrive extends OpMode{
     org.firstinspires.ftc.teamcode.HardwarePushbot robot       = new org.firstinspires.ftc.teamcode.HardwarePushbot();   // Use a Pushbot's hardware
     public ElapsedTime runtime = new ElapsedTime();
 
-    double beaconOffset = 0;
-    final double beaconSpeed = 0.2;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -129,28 +130,34 @@ public class UltroDrive extends OpMode{
         if(gamepad2.b){
             robot.intakeMotor.setPower(0);
         }
-        if(gamepad2.dpad_up){
-            power =+ INCREMENT;
-            if (power >= MAX_FWD){
+        if(gamepad2.dpad_up) {
+            power = +INCREMENT;
+            if (power >= MAX_FWD) {
                 power = MAX_FWD;
                 rampUp = !rampUp;
             }
-            
-        if(gamepad2.dpad_down){
-            power =+ DECREASE;
-            if (power <= MAX_REV){
-                power = MAX_REV;
-                rampUp = !rampUp;
+
+            if (gamepad2.dpad_down) {
+                power = +DECREASE;
+                if (power <= MAX_REV) {
+                    power = MAX_REV;
+                    rampUp = !rampUp;
+                }
+
+            } else {
+                power -= INCREMENT;
+                if (power <= MAX_REV) {
+                    power = MAX_REV;
+                    rampUp = !rampUp;
+                }
+
             }
 
-        } else {
-            power -= INCREMENT;
-            if (power <= MAX_REV){
-                power = MAX_REV;
-                rampUp = !rampUp;
-            }
+        if (gamepad2.left_bumper)
+            intakeOffset += INTAKE_SPEED;
+        else if (gamepad2.right_bumper)
+            intakeOffset -= INTAKE_SPEED;
 
-        }
         if(gamepad1.x) {
             robot.leftBeacon.setPosition(0.16);
         }
@@ -166,6 +173,7 @@ public class UltroDrive extends OpMode{
         if(gamepad1.dpad_up){
             align();
         }
+
         telemetry.addData("Flywheel Power", "%5.2f", power);
         telemetry.update();
         }

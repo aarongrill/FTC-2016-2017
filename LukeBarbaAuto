@@ -67,8 +67,8 @@ public class UltroAuto extends LinearOpMode {
     static final double     APPROACH_SPEED  = 0.5;
 
     //Encoder Setup
-    static final double     COUNTS_PER_MOTOR_REV    = 28.0 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 30.0 ;     // This is < 1.0 if geared UP
+    static final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
@@ -127,18 +127,27 @@ public class UltroAuto extends LinearOpMode {
 
         waitForStart();
 
+        while (opModeIsActive())
+        {
+            telemetry.addData("Clear", colorSensor.alpha());
+            telemetry.addData("Red  ", colorSensor.red());
+            telemetry.addData("Green", colorSensor.green());
+            telemetry.addData("Blue ", colorSensor.blue());
+            telemetry.update();
+        }
+
         //gyroDrive(0.7, 24.0, 0.0);
-        encoderDrive(0.7, 24.0, -24.0, 5.0);
+        //encoderDrive(0.7, 24.0, -24.0, 5.0);
 
-        turnAbsolute(45);
+        //turnAbsolute(45);
 
-        encoderDrive(0.7, 50.91, -50.91, 5.0);
+        //encoderDrive(0.7, 50.91, -50.91, 5.0);
 
-        turnAbsolute(90);
+        //turnAbsolute(90);
 
         decideColor();
 
-        lineToBeacon();
+
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -180,12 +189,10 @@ public class UltroAuto extends LinearOpMode {
         if(isBlue() == true)
         {
             robot.leftBeacon.setPosition(1.0);
-        }
-
-        if(isRed() == true)
-        {
+        }else{
             robot.rightBeacon.setPosition(1.0);
         }
+
         telemetry.update();
 
     }
@@ -210,8 +217,10 @@ public class UltroAuto extends LinearOpMode {
 
     public void lineToBeacon(){
         while (runtime.seconds()<=2.0) {
-            robot.leftMotor.setPower(APPROACH_SPEED);
-            robot.rightMotor.setPower(APPROACH_SPEED);
+            robot.leftFrontMotor.setPower(APPROACH_SPEED);
+            robot.leftBackMotor.setPower(APPROACH_SPEED);
+            robot.rightFrontMotor.setPower(APPROACH_SPEED);
+            robot.rightBackMotor.setPower(APPROACH_SPEED);
         }
     }
 
@@ -225,13 +234,17 @@ public class UltroAuto extends LinearOpMode {
 
         while (Math.abs(zAccumulated - target) > 3 && opModeIsActive()) {  //Continue while the robot direction is further than three degrees from the target
             if (zAccumulated > target) {  //if gyro is positive, we will turn right
-                robot.leftMotor.setPower(turnSpeed);
-                robot.rightMotor.setPower(-turnSpeed);
+                robot.leftFrontMotor.setPower(turnSpeed);
+                robot.leftBackMotor.setPower(turnSpeed);
+                robot.rightFrontMotor.setPower(-turnSpeed);
+                robot.rightBackMotor.setPower(-turnSpeed);
             }
 
             if (zAccumulated < target) {  //if gyro is positive, we will turn left
-                robot.leftMotor.setPower(-turnSpeed);
-                robot.rightMotor.setPower(turnSpeed);
+                robot.leftFrontMotor.setPower(-turnSpeed);
+                robot.leftBackMotor.setPower(-turnSpeed);
+                robot.rightFrontMotor.setPower(turnSpeed);
+                robot.rightBackMotor.setPower(turnSpeed);
             }
 
             zAccumulated = gyro.getIntegratedZValue();  //Set variables to gyro readings
@@ -239,8 +252,10 @@ public class UltroAuto extends LinearOpMode {
             telemetry.update();
         }
 
-        robot.leftMotor.setPower(0);  //Stop the motors
-        robot.rightMotor.setPower(0);
+        robot.leftFrontMotor.setPower(0.0);  //Stop the motors
+        robot.leftBackMotor.setPower(0.0);
+        robot.rightFrontMotor.setPower(0.0);
+        robot.rightBackMotor.setPower(0.0);
 
     }
 
@@ -256,7 +271,7 @@ public class UltroAuto extends LinearOpMode {
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      */
-    public void gyroDrive ( double speed,
+    /*public void gyroDrive ( double speed,
                             double distance,
                             double angle) {
 
@@ -274,24 +289,26 @@ public class UltroAuto extends LinearOpMode {
 
             // Determine new target position, and pass to motor controller
             moveCounts = (int)(distance * COUNTS_PER_INCH);
-            newLeftTarget = robot.leftMotor.getCurrentPosition() + moveCounts;
-            newRightTarget = robot.rightMotor.getCurrentPosition() + moveCounts;
+            newLeftTarget = robot.leftFrontMotor.getCurrentPosition() + moveCounts;
+            newRightTarget = robot.rightFrontMotor.getCurrentPosition() + moveCounts;
 
             // Set Target and Turn On RUN_TO_POSITION
-            robot.leftMotor.setTargetPosition(newLeftTarget);
-            robot.rightMotor.setTargetPosition(newRightTarget);
+            robot.leftFrontMotor.setTargetPosition(newLeftTarget);
+            robot.rightFrontMotor.setTargetPosition(newRightTarget);
 
-            robot.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
-            robot.leftMotor.setPower(speed);
-            robot.rightMotor.setPower(speed);
+            robot.leftFrontMotor.setPower(speed);
+            robot.leftBackMotor.setPower(speed);
+            robot.rightFrontMotor.setPower(speed);
+            robot.rightBackMotor.setPower(speed);
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                    (robot.leftMotor.isBusy() && robot.rightMotor.isBusy())) {
+                    (robot.leftFrontMotor.isBusy() && robot.rightFrontMotor.isBusy())) {
 
                 // adjust relative speed based on heading error.
                 error = getError(angle);
@@ -312,36 +329,42 @@ public class UltroAuto extends LinearOpMode {
                     rightSpeed /= max;
                 }
 
-                robot.leftMotor.setPower(leftSpeed);
-                robot.rightMotor.setPower(rightSpeed);
+                robot.leftFrontMotor.setPower(leftSpeed);
+                robot.leftBackMotor.setPower(leftSpeed);
+                robot.rightFrontMotor.setPower(rightSpeed);
+                robot.rightBackMotor.setPower(rightSpeed);
 
                 // Display drive status for the driver.
                 telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
                 telemetry.addData("Target",  "%7d:%7d",      newLeftTarget,  newRightTarget);
-                telemetry.addData("Actual",  "%7d:%7d",      robot.leftMotor.getCurrentPosition(),
-                        robot.rightMotor.getCurrentPosition());
+                telemetry.addData("Actual",  "%7d:%7d",      robot.leftFrontMotor.getCurrentPosition(),
+                        robot.rightFrontMotor.getCurrentPosition());
                 telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
                 telemetry.update();
             }
 
             // Stop all motion;
-            robot.leftMotor.setPower(0);
-            robot.rightMotor.setPower(0);
+            robot.leftFrontMotor.setPower(0);
+            robot.leftBackMotor.setPower(0);
+            robot.rightFrontMotor.setPower(0);
+            robot.rightBackMotor.setPower(0);
 
             // Turn off RUN_TO_POSITION
-            robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-    }
+    }*/
 
-    public void gyroTurn (  double speed, double angle) {
+    /*public void gyroTurn (  double speed, double angle) {
 
         // keep looping while we are still active, and not on heading.
         while (opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
             // Update telemetry & Allow time for other processes to run.
             telemetry.update();
         }
-    }
+    }*/
 
     /**
      *  Method to obtain & hold a heading for a finite amount of time
@@ -353,7 +376,7 @@ public class UltroAuto extends LinearOpMode {
      *                   If a relative angle is required, add/subtract from current heading.
      * @param holdTime   Length of time (in seconds) to hold the specified heading.
      */
-    public void gyroHold( double speed, double angle, double holdTime) {
+    /*public void gyroHold( double speed, double angle, double holdTime) {
 
         ElapsedTime holdTimer = new ElapsedTime();
 
@@ -366,9 +389,11 @@ public class UltroAuto extends LinearOpMode {
         }
 
         // Stop all motion;
-        robot.leftMotor.setPower(0);
-        robot.rightMotor.setPower(0);
-    }
+        robot.leftFrontMotor.setPower(0);
+        robot.leftBackMotor.setPower(0);
+        robot.rightFrontMotor.setPower(0);
+        robot.rightBackMotor.setPower(0);
+    }*/
 
     /**
      * Perform one cycle of closed loop heading control.
@@ -380,7 +405,7 @@ public class UltroAuto extends LinearOpMode {
      * @param PCoeff    Proportional Gain coefficient
      * @return
      */
-    boolean onHeading(double speed, double angle, double PCoeff) {
+    /*boolean onHeading(double speed, double angle, double PCoeff) {
         double   error ;
         double   steer ;
         boolean  onTarget = false ;
@@ -403,8 +428,10 @@ public class UltroAuto extends LinearOpMode {
         }
 
         // Send desired speeds to motors.
-        robot.leftMotor.setPower(leftSpeed);
-        robot.rightMotor.setPower(rightSpeed);
+        robot.leftFrontMotor.setPower(leftSpeed);
+        robot.leftBackMotor.setPower(leftSpeed);
+        robot.rightFrontMotor.setPower(rightSpeed);
+        robot.rightBackMotor.setPower(rightSpeed);
 
         // Display it for the driver.
         telemetry.addData("Target", "%5.2f", angle);
@@ -412,15 +439,15 @@ public class UltroAuto extends LinearOpMode {
         telemetry.addData("Speed.", "%5.2f:%5.2f", leftSpeed, rightSpeed);
 
         return onTarget;
-    }
+    }*/
 
     /**
      * getError determines the error between the target angle and the robot's current heading
-     * @param   targetAngle  Desired angle (relative to global reference established at last Gyro Reset).
+     * @param   //targetAngle  Desired angle (relative to global reference established at last Gyro Reset).
      * @return  error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
      *          +ve error means the robot should turn LEFT (CCW) to reduce error.
      */
-    public double getError(double targetAngle) {
+    /*public double getError(double targetAngle) {
 
         double robotError;
 
@@ -437,9 +464,9 @@ public class UltroAuto extends LinearOpMode {
      * @param PCoeff  Proportional Gain Coefficient
      * @return
      */
-    public double getSteer(double error, double PCoeff) {
+    /*public double getSteer(double error, double PCoeff) {
         return Range.clip(error * PCoeff, -1, 1);
-    }
+    }*/
 
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
@@ -451,43 +478,55 @@ public class UltroAuto extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftTarget = robot.leftMotor.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = robot.rightMotor.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            robot.leftMotor.setTargetPosition(newLeftTarget);
-            robot.rightMotor.setTargetPosition(newRightTarget);
+            newLeftTarget = robot.leftFrontMotor.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightTarget = robot.rightFrontMotor.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            robot.leftFrontMotor.setTargetPosition(newLeftTarget);
+            robot.leftBackMotor.setTargetPosition(newLeftTarget);
+            robot.rightFrontMotor.setTargetPosition(newRightTarget);
+            robot.rightBackMotor.setTargetPosition(newRightTarget);
 
             // Turn On RUN_TO_POSITION
-            robot.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
             runtime.reset();
-            robot.leftMotor.setPower(Math.abs(speed));
-            robot.rightMotor.setPower(Math.abs(speed));
+            robot.leftFrontMotor.setPower(Math.abs(speed));
+            robot.leftBackMotor.setPower(Math.abs(speed));
+            robot.rightFrontMotor.setPower(Math.abs(speed));
+            robot.rightBackMotor.setPower(Math.abs(speed));
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (robot.leftMotor.isBusy() && robot.rightMotor.isBusy())) {
+                    (robot.leftFrontMotor.isBusy() && robot.leftBackMotor.isBusy() && robot.rightFrontMotor.isBusy() &&
+                    robot.rightBackMotor.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
                 telemetry.addData("Path2",  "Running at %7d :%7d",
-                        robot.leftMotor.getCurrentPosition(),
-                        robot.rightMotor.getCurrentPosition());
+                        robot.leftFrontMotor.getCurrentPosition(), robot.leftBackMotor.getCurrentPosition(),
+                        robot.rightFrontMotor.getCurrentPosition(), robot.rightBackMotor.getCurrentPosition());
                 telemetry.update();
             }
 
             // Stop all motion;
-            robot.leftMotor.setPower(0);
-            robot.rightMotor.setPower(0);
+            robot.leftFrontMotor.setPower(0);
+            robot.leftBackMotor.setPower(0);
+            robot.rightFrontMotor.setPower(0);
+            robot.rightBackMotor.setPower(0);
 
             // Turn off RUN_TO_POSITION
-            robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             //  sleep(250);   // optional pause after each move
         }
     }
 
 }
+

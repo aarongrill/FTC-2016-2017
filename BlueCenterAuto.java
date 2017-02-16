@@ -64,7 +64,12 @@ public class BlueCenterAuto extends LinearOpMode {
     final double    INTAKE_SPEED  = 0.02 ;
 
     //color sensor
-    boolean LEDState = true;
+    ColorSensor color;
+    
+    //gyro
+    ModernRoboticsI2cGyro   gyro;                    // Additional Gyro device
+
+    boolean LEDState = false;
 
     @Override
     public void runOpMode(){
@@ -82,12 +87,17 @@ public class BlueCenterAuto extends LinearOpMode {
 
         robot.flyWheelMotor.setPower(power);
 
+        // get a reference to a Modern Robotics GyroSensor object.
+        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+
+        // get a reference to our ColorSensor object.
+        color = hardwareMap.colorSensor.get("color");
 
         //Gyro int setup
         int xVal, yVal, zVal = 0;
         int heading = 0;
         int angleZ = 0;
-
+        
         // reset Color Sensor
         robot.color.enableLed(false);
 
@@ -114,6 +124,7 @@ public class BlueCenterAuto extends LinearOpMode {
         gyroTurn(TURN_SPEED, 130);
         gyroDrive(DRIVE_SPEED, -45, 0);
         align(3000);
+        decideColor();
         // pushBeacon(2000);
         // gyroDrive(DRIVE_SPEED, 5, 0);
         // gyroTurn(TURN_SPEED, -90);
@@ -133,6 +144,68 @@ public class BlueCenterAuto extends LinearOpMode {
             }
         }
     }
+    
+    public void decideColor(){
+
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F,0F,0F};
+
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
+
+        // get a reference to the RelativeLayout so we can change the background
+        // color of the Robot Controller app to match the hue detected by the RGB sensor.
+        final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(R.id.RelativeLayout);
+
+        // convert the RGB values to HSV values.
+        Color.RGBToHSV(color.red() * 8, color.green() * 8, color.blue() * 8, hsvValues);
+
+        // send the info back to driver station using telemetry function.
+        telemetry.addData("LED", false ? "On" : "Off");
+        telemetry.addData("Clear", color.alpha());
+        telemetry.addData("Red  ", color.red());
+        telemetry.addData("Green", color.green());
+        telemetry.addData("Blue ", color.blue());
+        telemetry.addData("Hue", hsvValues[0]);
+
+        // change the background color to match the color detected by the RGB sensor.
+        // pass a reference to the hue, saturation, and value array as an argument
+        // to the HSVToColor method.
+        relativeLayout.post(new Runnable() {
+            public void run() {
+                relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
+            }
+        });
+
+        if(isBlue() == true)
+        {
+            robot.leftBeacon.setPosition(1.0);
+        }else{
+            robot.rightBeacon.setPosition(1.0);
+        }
+
+        telemetry.update();
+
+    }
+
+    public boolean isBlue(){
+        if(color.blue() > color.red() && color.blue() > color.green())
+        {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean isRed(){
+        if(color.red() > color.blue() && color.red() > color.green())
+        {
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
     public void shoot(){
         power = +INCREMENT;
         if (power >= MAX_FWD) {

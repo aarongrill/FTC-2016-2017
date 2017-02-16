@@ -66,7 +66,7 @@ public class UltroDrive extends OpMode{
     double          intakeOffset  = 0.0 ;                  // Servo mid position
     final double    INTAKE_SPEED  = 0.02 ;
 
-    static final double INCREMENT   = 0.01; // amount to ramp motor each CYCLE_MS cycle
+    static final double INCREMENT   = 0.001; // amount to ramp motor each CYCLE_MS cycle
     static final double DECREASE    = -0.01;
     static final double MAX_FWD     =  1.0;     // Maximum FWD power applied to motor
     static final double MAX_REV     =  1.0;     // Maximum REV power applied to motor
@@ -86,7 +86,7 @@ public class UltroDrive extends OpMode{
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
-        robot.limiter.setPosition(-.25);
+        robot.limiter.setPosition(1);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello Driver");    //
     }
@@ -153,11 +153,11 @@ public class UltroDrive extends OpMode{
                 }
             }
 
-        if(gamepad2.x){
-            robot.limiter.setPosition(0.5);
+        if(gamepad2.a){
+            robot.limiter.setPosition(.2);
         }
         else {
-            robot.limiter.setPosition(-.25);
+            robot.limiter.setPosition(1);
         }
         if (gamepad1.left_bumper) {
                 intakeOffset += INTAKE_SPEED;

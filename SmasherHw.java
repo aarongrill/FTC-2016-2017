@@ -92,10 +92,10 @@ public class HardwarePushbot {
 
 
         // Set Motor Direction
-        leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
-        leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
-        rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+        leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
+        rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
         flyWheelMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         //Set all motor powers to zero
@@ -110,8 +110,6 @@ public class HardwarePushbot {
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flyWheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
 
     }
     /***

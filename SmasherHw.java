@@ -111,9 +111,7 @@ public class HardwarePushbot {
         rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flyWheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Define and initialize ALL installed servos.
-            leftBeacon = hwMap.servo.get("left_Beacon");
-            rightBeacon = hwMap.servo.get("right_Beacon");
+
 
     }
     /***

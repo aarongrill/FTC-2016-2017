@@ -105,20 +105,21 @@ public class BlueCenterAuto extends LinearOpMode {
         }
         telemetry.addData(">", "Gyro Calibrated. Press Start.");
         telemetry.update();
+        robot.color.enableLed(LEDState);
 
         waitForStart();
-        robot.color.enableLed(LEDState);
-        gyroDrive(DRIVE_SPEED, 48, 0);
-        shoot(4.0);
-        gyroTurn(TURN_SPEED, -145);
-        gyroDrive(DRIVE_SPEED, -60, 0);
+        gyroDrive(DRIVE_SPEED, 50, 0);
+        shoot();
+        gyroDrive(DRIVE_SPEED, 7, 0);
+        gyroTurn(TURN_SPEED, 130);
+        gyroDrive(DRIVE_SPEED, -45, 0);
         align(3000);
-        pushBeacon(2000);
-        gyroDrive(DRIVE_SPEED, 5, 0);
-        gyroTurn(TURN_SPEED, -90);
-        gyroDrive(DRIVE_SPEED, -36, 0);
-        align(3000);
-        pushBeacon(2000);
+        // pushBeacon(2000);
+        // gyroDrive(DRIVE_SPEED, 5, 0);
+        // gyroTurn(TURN_SPEED, -90);
+        // gyroDrive(DRIVE_SPEED, 36, 180);
+        // align(3000);
+        // pushBeacon(2000);
     }
     public void pushBeacon(double time){
         while(runtime.seconds()<=time) {
@@ -132,37 +133,36 @@ public class BlueCenterAuto extends LinearOpMode {
             }
         }
     }
-    public void shoot(double time){
-        while(runtime.seconds()<=time){
-            power = +INCREMENT;
-            if (power >= MAX_FWD) {
-                power = MAX_FWD;
-                rampUp = !rampUp;
-            }
-            sleep(1000);
-            intakeOffset += INTAKE_SPEED;
-            sleep(500);
-            intakeOffset -= INTAKE_SPEED;
+    public void shoot(){
+        power = +INCREMENT;
+        if (power >= MAX_FWD) {
+            power = MAX_FWD;
+            rampUp = !rampUp;
         }
+        sleep(1000);
+        intakeOffset += INTAKE_SPEED;
+        sleep(500);
+        intakeOffset -= INTAKE_SPEED;
         power = +DECREASE;
         if (power <= MAX_REV) {
             power = MAX_REV;
             rampUp = !rampUp;
         }
+        sleep(500);
     }
     public void align(double time){
         while(runtime.seconds()<=time) {
             while ((robot.odsSensorI.getLightDetected() < 0.5) && (robot.odsSensorII.getLightDetected() < 0.5) && (robot.odsSensorIII.getLightDetected() < 0.5) && (robot.odsSensorIV.getLightDetected() < 0.5)) {
-                robot.leftFrontMotor.setPower(-0.2);
-                robot.leftBackMotor.setPower(-0.2);
-                robot.rightBackMotor.setPower(0);
-                robot.rightFrontMotor.setPower(0);
-                sleep(500);
+                robot.leftFrontMotor.setPower(-0.5);
+                robot.leftBackMotor.setPower(-0.5);
+                robot.rightBackMotor.setPower(0.0);
+                robot.rightFrontMotor.setPower(0.0);
+                sleep(700);
                 robot.leftFrontMotor.setPower(0);
                 robot.leftBackMotor.setPower(0);
-                robot.rightBackMotor.setPower(-0.2);
-                robot.rightFrontMotor.setPower(-0.2);
-                sleep(500);
+                robot.rightBackMotor.setPower(-0.5);
+                robot.rightFrontMotor.setPower(-0.5);
+                sleep(700);
             }
             while (((robot.odsSensorI.getLightDetected() > 0.5) || (robot.odsSensorII.getLightDetected() > 0.5) || (robot.odsSensorIII.getLightDetected() > 0.5)) && (robot.odsSensorIV.getLightDetected() < 0.5)) {
                 robot.leftFrontMotor.setPower(-0.2);
@@ -224,7 +224,7 @@ public class BlueCenterAuto extends LinearOpMode {
                     steer *= -1.0;
 
                 leftSpeed = speed - steer;
-                rightSpeed = speed + steer;
+                rightSpeed = speed - steer;
 
                 //normalize speeds
                 max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));

@@ -65,8 +65,10 @@ public class HardwarePushbot {
 
     public ColorSensor color;
 
+    public I2cDevice RANGE1;
+    public I2cDeviceSynch RANGE1Reader;
     // public ModernRoboticsI2cRangeSensor range;
-
+    I2cAddr RANGE1ADDRESS = new I2cAddr(0x14);
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
@@ -89,8 +91,9 @@ public class HardwarePushbot {
         limiter = hwMap.servo.get("limiter");
         gyro = (ModernRoboticsI2cGyro)hwMap.gyroSensor.get("gyro");
         color = hwMap.colorSensor.get("color");
+        RANGE1 = hwMap.i2cDevice.get("range");
 
-
+        RANGE1Reader = new I2cDeviceSynchImpl(RANGE1, RANGE1ADDRESS, false);
         // Set Motor Direction
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);

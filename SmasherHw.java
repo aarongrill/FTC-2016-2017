@@ -104,12 +104,13 @@ public class HardwarePushbot {
         rightFrontMotor.setPower(0);
         rightBackMotor.setPower(0);
         intakeMotor.setPower(0);
+        flyWheelMotor.setPower(0);
         //Establish whether or not you're using encoders
         leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flyWheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flyWheelMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
     /***

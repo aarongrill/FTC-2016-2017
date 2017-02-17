@@ -104,23 +104,33 @@ public class UltrasonicTest extends LinearOpMode {
         robot.color.enableLed(LEDState);
 
         robot.RANGE1Reader.engage();
-
+        
 
         waitForStart();
-        range1Cache = robot.RANGE1Reader.read(RANGE1_REG_START, RANGE1_READ_LENGTH);
-        telemetry.addData("Ultra Sonic", range1Cache[0] & 0xFF);
-        telemetry.addData("ODS", range1Cache[1] & 0xFF);
-        while(range1Cache[0] >= 8) {
+        runtime.reset();
+      
+        /* while(range1Cache[0] >= 8) {
             robot.leftFrontMotor.setPower(ULTRASONIC_DRIVE_SPEED);
             robot.leftBackMotor.setPower(ULTRASONIC_DRIVE_SPEED);
             robot.rightBackMotor.setPower(ULTRASONIC_DRIVE_SPEED);
             robot.rightFrontMotor.setPower(ULTRASONIC_DRIVE_SPEED);
         }
+        */
         robot.leftFrontMotor.setPower(0);
         robot.leftBackMotor.setPower(0);
         robot.rightBackMotor.setPower(0);
         robot.rightFrontMotor.setPower(0);
+        
+        while (opModeIsActive()) {
+            range1Cache = RANGE1Reader.read(RANGE1_REG_START, RANGE1_READ_LENGTH);
 
+            telemetry.addData("Ultra Sonic", range1Cache[0] & 0xFF);
+            telemetry.addData("ODS", range1Cache[1] & 0xFF);
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.update();
+
+            idle();
+        }
         //pushBeacon(2000);
         // gyroDrive(DRIVE_SPEED, 5, 0);
         // gyroTurn(TURN_SPEED, -90);

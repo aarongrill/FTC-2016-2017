@@ -58,7 +58,7 @@ public class BlueCenterAuto extends LinearOpMode {
     double power = 0;
     static final double INCREMENT   = 0.01; // amount to ramp motor each CYCLE_MS cycle
     static final double DECREASE    = -0.01;
-    static final double MAX_FWD     =  0.6;     // Maximum FWD power applied to motor
+    static final double MAX_FWD     =  1.00;     // Maximum FWD power applied to motor
     static final double MAX_REV     =  0;
     boolean rampUp  = true;
 
@@ -66,9 +66,7 @@ public class BlueCenterAuto extends LinearOpMode {
     double          intakeOffset  = 0.0 ;                  // Servo mid position
     final double    INTAKE_SPEED  = 0.02 ;
 
-    //color sensor
-    ColorSensor color;
-    
+
     //gyro
     ModernRoboticsI2cGyro   gyro;                    // Additional Gyro device
 
@@ -91,16 +89,11 @@ public class BlueCenterAuto extends LinearOpMode {
         robot.flyWheelMotor.setPower(power);
 
         // get a reference to a Modern Robotics GyroSensor object.
-        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
-
-        // get a reference to our ColorSensor object.
-        color = hardwareMap.colorSensor.get("color");
-
         //Gyro int setup
         int xVal, yVal, zVal = 0;
         int heading = 0;
         int angleZ = 0;
-        
+
         // reset Color Sensor
         robot.color.enableLed(false);
 
@@ -147,7 +140,7 @@ public class BlueCenterAuto extends LinearOpMode {
             }
         }
     }
-    
+
     public void decideColor(){
 
         // hsvValues is an array that will hold the hue, saturation, and value information.
@@ -161,14 +154,14 @@ public class BlueCenterAuto extends LinearOpMode {
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(R.id.RelativeLayout);
 
         // convert the RGB values to HSV values.
-        Color.RGBToHSV(color.red() * 8, color.green() * 8, color.blue() * 8, hsvValues);
+        Color.RGBToHSV(robot.color.red() * 8, robot.color.green() * 8, robot.color.blue() * 8, hsvValues);
 
         // send the info back to driver station using telemetry function.
         telemetry.addData("LED", false ? "On" : "Off");
-        telemetry.addData("Clear", color.alpha());
-        telemetry.addData("Red  ", color.red());
-        telemetry.addData("Green", color.green());
-        telemetry.addData("Blue ", color.blue());
+        telemetry.addData("Clear", robot.color.alpha());
+        telemetry.addData("Red  ", robot.color.red());
+        telemetry.addData("Green", robot.color.green());
+        telemetry.addData("Blue ", robot.color.blue());
         telemetry.addData("Hue", hsvValues[0]);
 
         // change the background color to match the color detected by the RGB sensor.
@@ -192,7 +185,7 @@ public class BlueCenterAuto extends LinearOpMode {
     }
 
     public boolean isBlue(){
-        if(color.blue() > color.red() && color.blue() > color.green())
+        if(robot.color.blue() > robot.color.red() && robot.color.blue() > robot.color.green())
         {
             return true;
         }else{
@@ -201,30 +194,34 @@ public class BlueCenterAuto extends LinearOpMode {
     }
 
     public boolean isRed(){
-        if(color.red() > color.blue() && color.red() > color.green())
+        if(robot.color.red() > robot.color.blue() && robot.color.red() > robot.color.green())
         {
             return true;
         }else{
             return false;
         }
     }
-    
+
     public void shoot(){
-        power = +INCREMENT;
+        while(power < 1.0)
+        power += INCREMENT;
         if (power >= MAX_FWD) {
             power = MAX_FWD;
-            rampUp = !rampUp;
+            rampUp = true;
+            robot.limiter.setPosition(.2);
+            sleep(500);
+            robot.limiter.setPosition(1);
+            sleep(500);
+            robot.limiter.setPosition(.2);
+            sleep(500);
+            robot.limiter.setPosition(1);
+            sleep(500);
         }
-        sleep(1000);
-        intakeOffset += INTAKE_SPEED;
-        sleep(500);
-        intakeOffset -= INTAKE_SPEED;
-        power = +DECREASE;
-        if (power <= MAX_REV) {
-            power = MAX_REV;
-            rampUp = !rampUp;
+        power -= INCREMENT;
+        if (power <= 0.0) {
+            power = 0.0;
+            rampUp = true;
         }
-        sleep(500);
     }
     public void align(double time){
         while(runtime.seconds()<=time) {

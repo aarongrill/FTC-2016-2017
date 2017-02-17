@@ -30,6 +30,7 @@ public class UltrasonicTest extends LinearOpMode {
 
     //Drive speed and turn speed
     static final double DRIVE_SPEED = 0.7;
+    static final double ULTRASONIC_DRIVE_SPEED = -0.2;
     static final double TURN_SPEED = 0.5;
 
     //Gyro
@@ -106,7 +107,21 @@ public class UltrasonicTest extends LinearOpMode {
 
 
         waitForStart();
-        pushBeacon(2000);
+        range1Cache = robot.RANGE1Reader.read(RANGE1_REG_START, RANGE1_READ_LENGTH);
+        telemetry.addData("Ultra Sonic", range1Cache[0] & 0xFF);
+        telemetry.addData("ODS", range1Cache[1] & 0xFF);
+        while(range1Cache[0] >= 8) {
+            robot.leftFrontMotor.setPower(ULTRASONIC_DRIVE_SPEED);
+            robot.leftBackMotor.setPower(ULTRASONIC_DRIVE_SPEED);
+            robot.rightBackMotor.setPower(ULTRASONIC_DRIVE_SPEED);
+            robot.rightFrontMotor.setPower(ULTRASONIC_DRIVE_SPEED);
+        }
+        robot.leftFrontMotor.setPower(0);
+        robot.leftBackMotor.setPower(0);
+        robot.rightBackMotor.setPower(0);
+        robot.rightFrontMotor.setPower(0);
+
+        //pushBeacon(2000);
         // gyroDrive(DRIVE_SPEED, 5, 0);
         // gyroTurn(TURN_SPEED, -90);
         // gyroDrive(DRIVE_SPEED, 36, 180);
@@ -119,19 +134,20 @@ public class UltrasonicTest extends LinearOpMode {
             range1Cache = robot.RANGE1Reader.read(RANGE1_REG_START, RANGE1_READ_LENGTH);
             telemetry.addData("Ultra Sonic", range1Cache[0] & 0xFF);
             telemetry.addData("ODS", range1Cache[1] & 0xFF);
+            if (range1Cache[0] <= 10) {
+                robot.leftFrontMotor.setPower(0);
+                robot.leftBackMotor.setPower(0);
+                robot.rightBackMotor.setPower(0);
+                robot.rightFrontMotor.setPower(0);
+            }
             if (robot.color.red() < robot.color.blue()) {
                 robot.leftBeacon.setPosition(0.3);
                 while (range1Cache[0] > 10) // Ultrasonic
                     robot.leftFrontMotor.setPower(-0.5);
-                    robot.leftBackMotor.setPower(-0.5);
-                    robot.rightBackMotor.setPower(-0.5);
-                    robot.rightFrontMotor.setPower(-0.5);
-                if (range1Cache[0] <= 10) {
-                    robot.leftFrontMotor.setPower(0);
-                    robot.leftBackMotor.setPower(0);
-                    robot.rightBackMotor.setPower(0);
-                    robot.rightFrontMotor.setPower(0);
-                }
+                robot.leftBackMotor.setPower(-0.5);
+                robot.rightBackMotor.setPower(-0.5);
+                robot.rightFrontMotor.setPower(-0.5);
+
             }
         }
         if (robot.color.red() > robot.color.blue()) {

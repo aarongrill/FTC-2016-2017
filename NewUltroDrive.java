@@ -65,11 +65,13 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 public class UltroDrive extends OpMode{
     double          intakeOffset  = 0.0 ;                  // Servo mid position
     final double    INTAKE_SPEED  = 0.02 ;
+    double          CLOSED = 0.75;
 
-    static final double INCREMENT   = 0.01; // amount to ramp motor each CYCLE_MS cycle
+    static final double INCREMENT   = 0.001; // amount to ramp motor each CYCLE_MS cycle
     static final double DECREASE    = -0.01;
-    static final double MAX_FWD     =  0.6;     // Maximum FWD power applied to motor
+    static final double MAX_FWD     =  1.0;     // Maximum FWD power applied to motor
     static final double MAX_REV     =  0;     // Maximum REV power applied to motor
+
     double  power   = 0;
     boolean rampUp  = true;
     /* Declare OpMode members. */
@@ -86,7 +88,7 @@ public class UltroDrive extends OpMode{
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
-
+        robot.limiter.setPosition(1);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello Driver");    //
     }
@@ -121,86 +123,67 @@ public class UltroDrive extends OpMode{
         robot.rightFrontMotor.setPower(right);
         robot.rightBackMotor.setPower(right);
         robot.flyWheelMotor.setPower(power);
-        if(gamepad1.a){
-            align();
+
+        if(gamepad2.dpad_up){
+            robot.intakeMotor.setPower(1.0);
         }
-        if(gamepad2.a){
-            robot.intakeMotor.setPower(0.5);
+        if(gamepad2.dpad_down){
+            robot.intakeMotor.setPower(-1.0);
         }
-        if(gamepad2.b){
+        if(gamepad2.dpad_left) {
             robot.intakeMotor.setPower(0);
         }
-        if(gamepad2.dpad_up) {
-            power = +INCREMENT;
+        if(gamepad2.dpad_right) {
+            robot.intakeMotor.setPower(0);
+        }
+
+        if(gamepad2.right_bumper) {
+            power += INCREMENT;
             if (power >= MAX_FWD) {
                 power = MAX_FWD;
-                rampUp = !rampUp;
+                rampUp = true;
             }
-
-            if (gamepad2.dpad_down) {
-                power = +DECREASE;
-                if (power <= MAX_REV) {
-                    power = MAX_REV;
-                    rampUp = !rampUp;
-                }
-
-            } else {
-                power -= INCREMENT;
-                if (power <= MAX_REV) {
-                    power = MAX_REV;
-                    rampUp = !rampUp;
-                }
-
+        }
+        if (gamepad2.left_bumper) {
+            power -= INCREMENT;
+            if (power <= 0.0) {
+                power = 0.0;
+                rampUp = true;
             }
+        }
+        if(power <= 0.0) {
+            power = 0.0;
+        }
+        if(power >= 1.0){
+            power = 1.0;
+        }
+        if(gamepad2.a){
+            robot.limiter.setPosition(.2);
+        }
+        else {
+            robot.limiter.setPosition(1);
+        }
 
-        if (gamepad2.left_bumper)
-            intakeOffset += INTAKE_SPEED;
-        else if (gamepad2.right_bumper)
-            intakeOffset -= INTAKE_SPEED;
-
-        if(gamepad1.x) {
+        if(gamepad1.x)
             robot.leftBeacon.setPosition(0.16);
-        }
-        if(gamepad1.y){
+
+        if(gamepad1.y)
             robot.leftBeacon.setPosition(1);
-        }
-        if(gamepad1.a){
+
+        if(gamepad1.a)
             robot.rightBeacon.setPosition(0.16);
-        }
-        if(gamepad1.b){
+
+        if(gamepad1.b)
             robot.rightBeacon.setPosition(1);
-        }
-        if(gamepad1.dpad_up){
-            align();
-        }
+
+
 
         telemetry.addData("Flywheel Power", "%5.2f", power);
         telemetry.update();
-        }
+
     }
 
     //stolen from the autonomous to automatically align with the white line
-    public void align() {
-        while (robot.odsSensorIV.getLightDetected() < 0.5) {
-            robot.leftFrontMotor.setPower(0.7);
-            robot.leftBackMotor.setPower(0.7);
-            robot.rightFrontMotor.setPower(0.7);
-            robot.rightBackMotor.setPower(0.7);
-            if ((robot.odsSensorIV.getLightDetected() > 0.5) && !(robot.odsSensorII.getLightDetected() > 0.5)) {
-                robot.leftFrontMotor.setPower(0.5);
-                robot.leftBackMotor.setPower(0.5);
-                robot.rightFrontMotor.setPower(-0.5);
-                robot.rightBackMotor.setPower(-0.5);
-            }
-        }
-        if ((robot.odsSensorIV.getLightDetected() > 0.5) && (robot.odsSensorII.getLightDetected() > 0.5)) {
-            robot.leftFrontMotor.setPower(0);
-            robot.leftBackMotor.setPower(0);
-            robot.rightFrontMotor.setPower(0);
-            robot.rightBackMotor.setPower(0);
-        }
-    }
-
 
 
 

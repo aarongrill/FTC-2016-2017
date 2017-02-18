@@ -128,6 +128,27 @@ public class BlueCenterAuto extends LinearOpMode {
         // align(3000);
         // pushBeacon(2000);
     }
+    
+    public void shoot(){
+        double power = 0;
+        
+        for(double power=0; power<1.0; power+=0.01){
+            robot.flyWheelMotor.setPower(power);
+        }
+        
+        power = 0;
+        
+        robot.limiter.setPosition(0.2);
+        
+        robot.limiter.setPosition(1.0);
+        
+        wait(2000);
+        
+        robot.limiter.setPosition(0.2);
+        
+        robot.limiter.setPosition(1.0);
+    }
+    
     public void pushBeacon(double time){
         while(runtime.seconds()<=time) {
             if (robot.color.red() < robot.color.blue()) {

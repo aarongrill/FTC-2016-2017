@@ -123,7 +123,7 @@ public class UltroAutoBlue extends LinearOpMode {
         gyroDrive(DRIVE_SPEED, -50.91, 0);
         gyroTurn(TURN_SPEED, -90);
         gyroDrive(DRIVE_SPEED, -14.0, 0);
-        decideColor();
+        //decideColor();
     }
     public void pushBeacon(double time){
         while(runtime.seconds()<=time) {
